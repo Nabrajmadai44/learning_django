@@ -1,0 +1,5 @@
+DTL => Django Templating Language (Similar to Jinja Templating)
+We can use three  kinds of syntax in DTL
+1. Variable in double curly braces ={{ }}
+2. Tags in single curly braces with % sign like load static file => {% %}
+3. Filters in double curly braces => {{ }}
