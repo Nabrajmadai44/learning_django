@@ -1,11 +1,25 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 from rest_framework import status
 from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView, UpdateAPIView, \
-    RetrieveAPIView, DestroyAPIView
+    RetrieveAPIView, DestroyAPIView, RetrieveUpdateDestroyAPIView
 from crud.models import Student, ClassRoom
+from rest_framework.viewsets import ModelViewSet
 from .serializers import ClassRoomSerializer, StudentSerializer, StudentModelSerializer, ClassRoomModelSerializer
 
+# 1XX => Socket Communication
+# 2XX => Success (200, 201, 204)
+# 3XX => Redirection (301, 302)
+# 4XX => Frontend Error (400, 401, 403, 404, 405)
+# 5XX => Server Error (500, 502)
+
+# class LoginRequiredMixin:
+#     authentication_classes = [TokenAuthentication]
+#     permission_classes = [IsAuthenticated]
 
 class StudentDetailView(APIView):
     def get(self, *args, **kwargs):  # (), {}
@@ -242,9 +256,17 @@ class ClassRoomGenericDetailView(RetrieveAPIView):
 class ClassRoomGenericDeleteView(DestroyAPIView):
     queryset = ClassRoom.objects.all()
     serializer_class = ClassRoomModelSerializer
+ 
 
-# 1XX => Socket Communication
-# 2XX => Success (200, 201, 204)
-# 3XX => Redirection (301, 302)
-# 4XX => Frontend Error (400, 401, 403, 404, 405)
-# 5XX => Server Error (500, 502)
+class StudentUpdateRetrieveDestroyView(RetrieveUpdateDestroyAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentModelSerializer
+
+class ClassRoomViewSet(ModelViewSet):
+    queryset = ClassRoom.objects.all()
+    serializer_class = ClassRoomModelSerializer
+  
+    
+class StudentViewSet(ModelViewSet):
+    queryset = Student.objects.all()
+    serializer_class = StudentModelSerializer  
