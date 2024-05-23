@@ -1,7 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView, UpdateAPIView, RetrieveAPIView, DetailAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView, UpdateAPIView, \
+    RetrieveAPIView, DestroyAPIView
 from crud.models import Student, ClassRoom
 from .serializers import ClassRoomSerializer, StudentSerializer, StudentModelSerializer, ClassRoomModelSerializer
 
@@ -141,6 +142,14 @@ class ClassRoomUsingSerializerDetailView(APIView):
 
 
 class ClassRoomUsingSerializerView(APIView):
+
+    """
+
+        def get(self, *args, **kwargs):
+            students = Student.objects.all()
+            ser = StudentSerializer(students, many=True)
+            return Response(ser.data)
+    """
     def get(self, *args, **kwargs):
         classrooms = ClassRoom.objects.all()
         serializer = ClassRoomSerializer(classrooms, many=True) # Serialization
@@ -184,7 +193,7 @@ class StudentUsingSerializerView(APIView):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
-class StudentUsingModelSerializerView(APIView):
+class StudentUsingModelSerView(APIView):
     def get(self, *args, **kwargs):
         students = Student.objects.all()
         ser = StudentModelSerializer(students, many=True, context={"request": self.request})
@@ -203,31 +212,36 @@ class StudentUsingModelSerializerView(APIView):
             "message": "Could not create student !",
             "errors": serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
-        
+
+
 class ClassRoomGenericListView(ListAPIView):
     queryset = ClassRoom.objects.all()
-    serializer_class = StudentModelSerializer
-    
+    serializer_class = ClassRoomModelSerializer
+
+
 class ClassRoomGenericCreateView(CreateAPIView):
     queryset = ClassRoom.objects.all()
     serializer_class = ClassRoomModelSerializer
-    
+
+
 class ClassRoomGenericView(ListCreateAPIView):
     queryset = ClassRoom.objects.all()
     serializer_class = ClassRoomModelSerializer
 
+
 class ClassRoomGenericUpdateView(UpdateAPIView):
     queryset = ClassRoom.objects.all()
     serializer_class = ClassRoomModelSerializer
-    
-class ClassRoomGenericDetailView(DetailAPIView):
+
+
+class ClassRoomGenericDetailView(RetrieveAPIView):
     queryset = ClassRoom.objects.all()
     serializer_class = ClassRoomModelSerializer
 
-class ClassRoomGenericRetriveView(RetrieveAPIView):
+
+class ClassRoomGenericDeleteView(DestroyAPIView):
     queryset = ClassRoom.objects.all()
     serializer_class = ClassRoomModelSerializer
-
 
 # 1XX => Socket Communication
 # 2XX => Success (200, 201, 204)
