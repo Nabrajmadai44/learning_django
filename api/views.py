@@ -3,6 +3,8 @@ from rest_framework.response import Response
 
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import status
 from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView, UpdateAPIView, \
@@ -282,8 +284,11 @@ class ClassRoomViewSet(ModelViewSet):
 
 class StudentViewSet(ModelViewSet):
     # permission_classes = [AllowAny]
+    filter_backends = [SearchFilter, DjangoFilterBackend]
+    filterset_fields = ["classroom__name"]
+    search_fields = ["name", "email", "address"]
     serializer_class = StudentModelSerializer
-    queryset = Student.objects.all()
+    queryset = Student.objects.all().order_by('-id')
 
 
 class UserViewSet(ModelViewSet):
